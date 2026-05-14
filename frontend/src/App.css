@@ -1,3 +1,53 @@
+.app-root, body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+.job-form,
+.job-form input,
+.job-form textarea,
+.job-form select,
+.job-form button {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+.job-form input,
+.job-form textarea,
+.job-form select {
+  color: #656565;
+}
+
+.job-form input::placeholder,
+.job-form textarea::placeholder {
+  color: #656565;
+}
+
+.double-circle {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.double-circle .outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid #D1D5DB;
+}
+.double-circle .inner {
+  position: absolute;
+  inset: 4px;
+  border-radius: 9999px;
+  border: 2px solid white;
+  background: transparent;
+}
+.double-circle.selected .inner {
+  background: #E31F87;
+  border: none;
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

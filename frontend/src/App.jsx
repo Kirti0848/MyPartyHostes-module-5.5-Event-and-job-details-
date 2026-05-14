@@ -47,15 +47,15 @@ const icons = {
   map: <img src="/organizers/MapPin.png" alt="Map pin" className="w-[14px] h-[14px] object-contain" />
 };
 
-function DropdownField({ label, value, placeholder, options, onChange, selectedColor = 'text-[#292929]', backgroundClass = 'bg-[#F9F9F9]', suffixIcon = icons.angleDown, plainSuffixIcon = false }) {
+function DropdownField({ label, value, placeholder, options, onChange, selectedColor = 'text-[#292929]', backgroundClass = 'bg-transparent', suffixIcon = icons.angleDown, plainSuffixIcon = false, extraClass = '', iconClass = '' }) {
   return (
     <div>
-      <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">{label}</label>
+      <label className="block text-[14px] text-[#3D3D3D] mb-1.5 font-normal">{label}</label>
       <div className="relative">
         <select
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className={`select-field w-full appearance-none border border-gray-200 rounded-lg p-3 pr-12 text-[14px] ${selectedColor} ${backgroundClass} outline-none`}
+          className={`select-field w-full appearance-none border rounded-lg p-3 pr-12 text-[14px] ${selectedColor} ${backgroundClass} outline-none ${extraClass}`}
         >
           <option value="" disabled>
             {placeholder}
@@ -67,11 +67,7 @@ function DropdownField({ label, value, placeholder, options, onChange, selectedC
           ))}
         </select>
 
-        <span
-          className={plainSuffixIcon
-            ? 'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#656565] flex items-center justify-center'
-            : 'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border border-[#656565] bg-white flex items-center justify-center text-[#656565] flex-shrink-0'}
-        >
+        <span className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center ${iconClass} ${plainSuffixIcon ? 'text-[#656565]' : 'w-5 h-5 rounded-full border border-[#656565] bg-transparent text-[#656565]'}`}>
           {suffixIcon}
         </span>
       </div>
@@ -90,6 +86,8 @@ function App() {
   const [duration, setDuration] = useState('');
   const [staffCategory, setStaffCategory] = useState('');
   const [locationCity, setLocationCity] = useState('Brisbane (WEST)');
+  const [travelOption, setTravelOption] = useState('No Travel Allowance');
+  const [travelAmount, setTravelAmount] = useState('0');
 
   const organisers = [
     { id: 1, name: 'Robert John', email: 'robert.john@gmail.com', desc: '34 events organized • Sydney, NSW', img: '/organizers/Image (Robert John).png' },
@@ -104,17 +102,17 @@ function App() {
         day: '2-digit',
         year: 'numeric',
       })
-    : 'Select event date.';
+    : 'mm/dd/yyyy';
 
   return (
-    <div className="min-h-screen bg-white py-10 px-4 flex justify-center font-sans relative">
+    <div className="min-h-screen bg-white py-10 px-4 flex flex-col items-center font-sans relative">
 
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-[520px] rounded-2xl overflow-hidden shadow-xl animate-in fade-in zoom-in duration-200 border border-gray-100">
             <div className="px-4 py-3.5 border-b border-gray-100 flex justify-between items-center">
               <h3 className="font-bold text-[15px] text-gray-800">Select Event Organiser</h3>
-              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-400 text-lg leading-none hover:bg-gray-50">
+                <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-400 text-lg leading-none hover:bg-white">
                 <i className="fa-solid fa-xmark" />
               </button>
             </div>
@@ -152,17 +150,17 @@ function App() {
 
             <div className="p-4 border-t border-gray-100 flex justify-between items-center bg-[#F6F6F6]">
               <span className="text-[11px] text-gray-400 font-medium">{organisers.length} Organisers available</span>
-              <button onClick={() => setShowModal(false)} className="px-5 py-2 border border-gray-200 rounded-lg text-xs font-bold text-gray-500 bg-white hover:bg-gray-50">Cancel</button>
+              <button onClick={() => setShowModal(false)} className="px-5 py-2 border border-gray-200 rounded-lg text-xs font-bold text-gray-500 bg-white hover:bg-white">Cancel</button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="w-full max-w-[747px] bg-[#F9F9F9] shadow-none p-8 border-none mb-10 relative overflow-visible">
+      <div className="job-form w-full max-w-[747px] bg-[#F9F9F9] shadow-none p-8 border-none mb-10 relative overflow-visible">
 
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-[16px] font-bold text-[#292929]">1. Event and Job Details</h2>
-          <button className="text-gray-400 hover:text-gray-600 leading-none">
+          <h2 className="text-[18px] font-bold text-[#292929]">1. Event and Job Details</h2>
+          <button className="w-8 h-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 leading-none">
             <i className="fa-solid fa-xmark" />
           </button>
         </div>
@@ -174,6 +172,7 @@ function App() {
             placeholder="Select country"
             options={countryOptions}
             onChange={setCountry}
+            extraClass="border-[#656565]"
           />
 
           <DropdownField
@@ -182,10 +181,11 @@ function App() {
             placeholder="Select city"
             options={cityOptions}
             onChange={setJobCity}
+            extraClass="border-[#656565]"
           />
 
           <div>
-            <label className="block text-[11px] text-[#3D3D3D] mb-1">Currency</label>
+            <label className="block text-[14px] text-[#3D3D3D] mb-1">Currency</label>
             <div className="inline-block px-4 py-2 rounded-lg bg-[#F9F9F9] border border-gray-200">
               <p className="font-medium text-[14px] text-[#292929]">AUD</p>
             </div>
@@ -198,29 +198,33 @@ function App() {
             options={staffCategoryOptions}
             onChange={setStaffCategory}
             selectedColor="text-[#656565]"
+            extraClass="border-[#ECECEC]"
           />
 
           <div>
-            <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">Number of Position</label>
-            <input type="text" placeholder="Enter how many staff you need." className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] bg-[#F9F9F9] outline-none" />
+            <label className="block text-[14px] text-[#656565] mb-1.5 font-normal">Number of Position</label>
+            <input type="text" placeholder="Enter how many staff you need." className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] bg-transparent outline-none" />
           </div>
 
           <div>
-            <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">Event Name</label>
-            <input type="text" placeholder="Give your event a name" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] bg-[#F9F9F9] outline-none" />
+            <label className="block text-[14px] text-[#656565] mb-1.5 font-normal">Event Name</label>
+            <input type="text" placeholder="Give your event a name" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] bg-transparent outline-none" />
           </div>
 
           <div>
-            <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">Job Description</label>
-            <textarea rows="3" placeholder="Provide a short description of the job." className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] bg-[#F9F9F9] outline-none"></textarea>
+            <label className="block text-[14px] text-[#3D3D3D] mb-1.5 font-normal">Job Description</label>
+            <div className="flex justify-end mb-1">
+              <span className="text-[11px] text-[#656565]">Max 500 ch</span>
+            </div>
+            <textarea rows="3" placeholder="provide a short discription for job." className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] bg-transparent outline-none" />
           </div>
         </div>
 
         <div className="mb-6">
-          <h2 className="text-[16px] font-bold text-[#292929] mb-4">2. Assign Event Organiser</h2>
           <div className="bg-white p-6 shadow-sm rounded-lg">
-            <p className="text-[13px] text-[#292929] font-normal">Event Organiser</p>
-            <p className="text-[12px] text-[#3D3D3D] mt-1 mb-4">Select an event organiser who will manage this event.</p>
+            <h2 className="text-[18px] font-bold text-[#292929] mb-2">2. Assign Event Organiser</h2>
+            <p className="text-[14px] text-[#292929] font-normal">Event Organiser</p>
+            <p className="text-[13px] text-[#3D3D3D] mt-1 mb-4">Select an event organiser who will manage this event.</p>
             
             {selectedOrg ? (
               <div className="flex items-center gap-3 p-3 border-2 border-[#E61E4D] bg-pink-50 rounded-lg transition-all">
@@ -243,12 +247,12 @@ function App() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-[16px] font-bold text-[#292929] mb-4">3. Date, Time and Duration</h2>
+          <h2 className="text-[18px] font-bold text-[#292929] mb-4">3. Date, Time and Duration</h2>
           <div className="space-y-5">
             <div>
-              <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">Job Date</label>
+              <label className="block text-[14px] text-[#3D3D3D] mb-1.5 font-normal">Job Date</label>
               <div className="relative">
-                <div className="w-full border border-gray-200 rounded-lg p-3 pr-10 text-[14px] text-[#656565] outline-none bg-[#ECECEC] min-h-[48px] flex items-center">
+                <div className="w-full border border-gray-200 rounded-lg p-3 pr-10 text-[14px] text-[#656565] outline-none bg-transparent min-h-[48px] flex items-center">
                   <span className={jobDate ? 'text-[#656565]' : 'text-[#656565]'}>{formattedJobDate}</span>
                 </div>
                 <input
@@ -261,13 +265,34 @@ function App() {
                 <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#656565] flex items-center justify-center">
                   {icons.calendar}
                 </span>
+                <p className="text-[11px] text-[#656565] mt-2">Select event date.</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">Start Time</label>
-                <input type="time" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-[#ECECEC]" />
-              </div>
+              <div className="w-full">
+  <label className="block text-[14px] text-[#3D3D3D] mb-1.5 font-normal">
+    Start Time
+  </label>
+  
+  <div className="relative flex items-center">
+    {/* Input field */}
+    <input 
+      type="time" 
+      className="w-full border border-gray-200 rounded-lg p-3 pr-10 text-[14px] text-[#656565] outline-none bg-transparent appearance-none 
+                 [&::-webkit-calendar-picker-indicator]:absolute 
+                 [&::-webkit-calendar-picker-indicator]:right-3 
+                 [&::-webkit-calendar-picker-indicator]:w-full 
+                 [&::-webkit-calendar-picker-indicator]:h-full 
+                 [&::-webkit-calendar-picker-indicator]:opacity-0 
+                 [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
+    />
+    
+    {/* Font Awesome Icon (Sirf dikhne ke liye) */}
+    <div className="absolute right-3 flex items-center pointer-events-none">
+      <i className="fa-regular fa-clock text-[#656565]"></i>
+    </div>
+  </div>
+</div>
               <DropdownField
                 label="Duration"
                 value={duration}
@@ -275,21 +300,22 @@ function App() {
                 options={durationOptions}
                 onChange={setDuration}
                 selectedColor="text-[#656565]"
-                backgroundClass="bg-[#ECECEC]"
+                backgroundClass="bg-transparent"
+                extraClass="border-[#ECECEC]"
               />
             </div>
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-[12px] text-[#3D3D3D] font-normal">End Time</label>
+                <label className="text-[14px] text-[#3D3D3D] font-normal">End Time</label>
                 <span className="text-[11px] text-[#656565]">End time will be calculated automatically</span>
               </div>
-              <input type="text" disabled className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-[#ECECEC]" />
+              <input type="text" disabled className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-transparent" />
             </div>
           </div>
         </div>
 
         <div className="mb-8">
-          <h2 className="text-[16px] font-bold text-[#292929] mb-4">4. Location & Preferences</h2>
+          <h2 className="text-[20px] font-bold text-[#292929] mb-4">4. Location & Preferences</h2>
           <div className="space-y-5">
             <DropdownField
               label="City"
@@ -298,22 +324,28 @@ function App() {
               options={cityOptions}
               onChange={setLocationCity}
               selectedColor="text-[#656565]"
-              backgroundClass="bg-[#ECECEC]"
+              backgroundClass="bg-transparent"
               suffixIcon={icons.map}
               plainSuffixIcon
+              extraClass="border-[#ECECEC]"
             />
             <div>
-              <label className="block text-[12px] text-[#3D3D3D] mb-1.5 font-normal">Suburb</label>
-              <input type="text" placeholder="Suburb" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-[#ECECEC]" />
+              <label className="block text-[14px] text-[#3D3D3D] mb-1.5 font-normal">Suburb</label>
+              <input type="text" placeholder="Suburb" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-transparent" />
             </div>
             <div>
-              <label className="block text-[12px] text-[#3D3D3D] mb-3 font-normal">Looking for</label>
+              <label className="block text-[14px] text-[#3D3D3D] mb-3 font-normal">Looking for</label>
               <div className="flex gap-6">
                 {['Male', 'Female', 'Any'].map((l) => (
                   <label key={l} onClick={() => setGender(l)} className="flex items-center gap-2 cursor-pointer group">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${gender === l ? 'border-[#E31F87]' : 'border-gray-300'}`}>
-                      {gender === l && <div className="w-2.5 h-2.5 rounded-full bg-[#E31F87]"></div>}
-                    </div>
+                    <span className="relative w-5 h-5 flex-shrink-0">
+                      <img src="/organizers/Vector (8).png" alt="checkbox" className={`w-5 h-5 object-contain ${gender === l ? 'opacity-100' : 'opacity-60'}`} />
+                      {gender === l && (
+                        <span className="absolute inset-0 rounded-full border-2 border-[#E31F87] flex items-center justify-center">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#E31F87]" />
+                        </span>
+                      )}
+                    </span>
                     <span className={`text-[14px] font-normal ${gender === l ? 'text-[#E31F87] font-bold' : 'text-[#3D3D3D]'}`}>{l}</span>
                   </label>
                 ))}
@@ -323,14 +355,19 @@ function App() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-[16px] font-bold text-[#292929] mb-4">5. Pay</h2>
-          <label className="block text-[12px] text-[#3D3D3D] mb-3 font-normal">Pay Rate</label>
+          <h2 className="text-[20px] font-bold text-[#292929] mb-4">5. Pay</h2>
+          <label className="block text-[14px] text-[#3D3D3D] mb-3 font-normal">Pay Rate</label>
           <div className="flex gap-6 mb-6">
             {['Hourly', 'Fixed'].map((r) => (
               <label key={r} onClick={() => setPayRate(r)} className="flex items-center gap-2 cursor-pointer">
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${payRate === r ? 'border-[#E31F87]' : 'border-gray-300'}`}>
-                  {payRate === r && <div className="w-2.5 h-2.5 rounded-full bg-[#E31F87]"></div>}
-                </div>
+                <span className="relative w-5 h-5 flex-shrink-0">
+                  <img src="/organizers/Vector (8).png" alt="checkbox" className={`w-5 h-5 object-contain ${payRate === r ? 'opacity-100' : 'opacity-60'}`} />
+                  {payRate === r && (
+                    <span className="absolute inset-0 rounded-full border-2 border-[#E31F87] flex items-center justify-center">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#E31F87]" />
+                    </span>
+                  )}
+                </span>
                 <span className={`text-[14px] font-normal ${payRate === r ? 'text-[#E31F87] font-bold' : 'text-[#3D3D3D]'}`}>{r}</span>
               </label>
             ))}
@@ -339,34 +376,49 @@ function App() {
             <span>Rate Offer</span>
             <span>Minimum rates apply to ensure fair pay</span>
           </div>
-          <input type="text" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-[#ECECEC]" />
+          <input type="text" className="w-full border border-gray-200 rounded-lg p-3 text-[14px] text-[#656565] outline-none bg-transparent" />
         </div>
 
         <div className="mb-8">
-          <h2 className="text-[16px] font-bold text-[#292929] mb-4">6. Travel</h2>
+          <h2 className="text-[20px] font-bold text-[#292929] mb-4">6. Travel</h2>
           <div className="space-y-4">
-            {['No Travel Allowance', 'Will Pay for Uber Home'].map((l) => (
-              <label key={l} className="flex items-center gap-3 cursor-pointer">
-                <div className="w-5 h-5 rounded-full border-2 border-gray-300"></div>
-                <span className="text-[14px] text-[#3D3D3D] font-medium">{l}</span>
+            {['No Travel Allowance', 'Will Pay for Uber Home', 'Custom Amount'].map((l) => (
+              <label key={l} onClick={() => setTravelOption(l)} className="flex items-center gap-2 cursor-pointer">
+                <span className="relative w-5 h-5 flex-shrink-0">
+                  <img src="/organizers/Vector (8).png" alt="checkbox" className={`w-5 h-5 object-contain ${travelOption === l ? 'opacity-100' : 'opacity-60'}`} />
+                  {travelOption === l && (
+                    <span className="absolute inset-0 rounded-full border-2 border-[#E31F87] flex items-center justify-center">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#E31F87]" />
+                    </span>
+                  )}
+                </span>
+                {l !== 'Custom Amount' && (
+                  <span className={`text-[14px] font-normal ${travelOption === l ? 'text-[#E31F87] font-bold' : 'text-[#3D3D3D]'}`}>{l}</span>
+                )}
+
+                {l === 'Custom Amount' && (
+                  <div className="ml-1 w-24 border border-[#656565] rounded-lg px-3 py-2 text-[14px] flex items-center justify-left font-bold bg-transparent">
+                    <span className="text-[#656565]">$</span>
+                    <input
+                      type="text"
+                      value={travelAmount}
+                      onChange={(e) => setTravelAmount(e.target.value)}
+                      aria-label="Custom travel amount"
+                      className="sr-only"
+                      placeholder="0"
+                    />
+                  </div>
+                )}
               </label>
             ))}
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full border-2 border-[#E31F87] flex items-center justify-center">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#E31F87]"></div>
-              </div>
-              <div className="w-24 bg-[#F9F9F9] border border-gray-200 rounded-lg px-3 py-2 text-[14px] flex items-center gap-1 font-bold">
-                <span className="text-[#656565]">$</span>
-                <input type="text" className="bg-transparent outline-none w-full text-[#656565] font-medium" placeholder="0" />
-              </div>
-            </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-10 mt-6">
-          <button className="px-7 py-2.5 border border-[#E31F87] text-[#E31F87] text-[13px] font-bold rounded-lg hover:bg-[#f5f5f5] transition-colors">Preview Job</button>
-          <button className="px-10 py-2.5 bg-gradient-to-r from-[#E61E4D] to-[#E31F87] text-white text-[13px] font-bold rounded-lg shadow-md hover:shadow-lg transition-all">Update</button>
-        </div>
+      </div>
+
+      <div className="w-full max-w-[747px] flex justify-end gap-3 pt-0">
+        <button className="px-7 py-2.5 border border-[#E31F87] text-[#E31F87] text-[13px] font-bold rounded-lg hover:bg-[#f5f5f5] transition-colors">Preview Job</button>
+        <button className="px-10 py-2.5 bg-gradient-to-r from-[#E61E4D] to-[#E31F87] text-white text-[13px] font-bold rounded-lg shadow-md hover:shadow-lg transition-all">Update</button>
       </div>
     </div>
   );
